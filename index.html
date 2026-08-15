@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R.M Imobiliária - Simulador de Orçamento de Aluguel</title>
+    <meta name="description" content="Simule o orçamento mensal do aluguel do seu imóvel de forma rápida e gere o cronograma de parcelas anual em CSV.">
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-house-chimney-user"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>R.M</h1>
+                    <span>Imobiliária</span>
+                </div>
+            </div>
+            <div class="header-title-container">
+                <h2>Simulador de Orçamento de Locação</h2>
+                <p>Configure os detalhes do imóvel e simule as parcelas mensais em tempo real.</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Left: Configurations -->
+            <section class="config-panel">
+                <h3 class="section-title"><i class="fa-solid fa-sliders"></i> Personalize seu Imóvel</h3>
+                
+                <!-- Step 1: Tipo de Imóvel -->
+                <div class="config-group">
+                    <label class="group-label">1. Escolha o Tipo de Imóvel</label>
+                    <div class="property-cards-container">
+                        <!-- Apartment Card -->
+                        <div class="property-card active" data-type="apartment" id="card-apartment" tabindex="0">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-building"></i>
+                            </div>
+                            <div class="card-details">
+                                <h4>Apartamento</h4>
+                                <span class="card-price">R$ 700,00 <small>/mês</small></span>
+                                <span class="card-desc">1 Quarto Padrão</span>
+                            </div>
+                            <div class="card-check">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                        </div>
+
+                        <!-- House Card -->
+                        <div class="property-card" data-type="house" id="card-house" tabindex="0">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-house"></i>
+                            </div>
+                            <div class="card-details">
+                                <h4>Casa</h4>
+                                <span class="card-price">R$ 900,00 <small>/mês</small></span>
+                                <span class="card-desc">1 Quarto Padrão</span>
+                            </div>
+                            <div class="card-check">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                        </div>
+
+                        <!-- Studio Card -->
+                        <div class="property-card" data-type="studio" id="card-studio" tabindex="0">
+                            <div class="card-icon">
+                                <i class="fa-solid fa-laptop-house"></i>
+                            </div>
+                            <div class="card-details">
+                                <h4>Estúdio</h4>
+                                <span class="card-price">R$ 1.200,00 <small>/mês</small></span>
+                                <span class="card-desc">Conceito Aberto</span>
+                            </div>
+                            <div class="card-check">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Customização (Campos Dinâmicos) -->
+                <div class="config-group" id="dynamic-options-group">
+                    <label class="group-label">2. Opcionais e Características</label>
+                    
+                    <!-- Bedrooms (Apartment & House) -->
+                    <div class="option-field" id="field-bedrooms">
+                        <div class="option-header">
+                            <div class="option-title">
+                                <i class="fa-solid fa-bed icon-accent"></i>
+                                <div>
+                                    <h5>Número de Quartos</h5>
+                                    <p class="option-subtext">Selecione a quantidade de quartos desejada</p>
+                                </div>
+                            </div>
+                            <div class="btn-group" id="bedrooms-btn-group">
+                                <button type="button" class="btn-toggle active" data-value="1">1 Quarto</button>
+                                <button type="button" class="btn-toggle" data-value="2">2 Quartos</button>
+                            </div>
+                        </div>
+                        <div class="price-indicator" id="bedrooms-price-indicator">
+                            <span class="badge">+ R$ 0,00 na mensalidade</span>
+                        </div>
+                    </div>
+
+                    <!-- Garage Space (Apartment & House) -->
+                    <div class="option-field" id="field-garage">
+                        <div class="option-header">
+                            <div class="option-title">
+                                <i class="fa-solid fa-car icon-accent"></i>
+                                <div>
+                                    <h5>Vaga de Garagem</h5>
+                                    <p class="option-subtext">Disponibilidade de vaga privativa coberta</p>
+                                </div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="garage-checkbox">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="price-indicator">
+                            <span class="badge">+ R$ 300,00 na mensalidade</span>
+                        </div>
+                    </div>
+
+                    <!-- Children Discount (Only Apartment) -->
+                    <div class="option-field" id="field-children">
+                        <div class="option-header">
+                            <div class="option-title">
+                                <i class="fa-solid fa-baby icon-accent"></i>
+                                <div>
+                                    <h5>Possui Crianças?</h5>
+                                    <p class="option-subtext">Desconto de 5% se não possuir crianças</p>
+                                </div>
+                            </div>
+                            <div class="btn-group" id="children-btn-group">
+                                <button type="button" class="btn-toggle active" data-value="yes">Sim</button>
+                                <button type="button" class="btn-toggle" data-value="no">Não</button>
+                            </div>
+                        </div>
+                        <div class="price-indicator" id="children-price-indicator">
+                            <span class="badge badge-success">Desconto Elegível (-5% no aluguel)</span>
+                        </div>
+                    </div>
+
+                    <!-- Parking Spaces (Only Studio) -->
+                    <div class="option-field hidden" id="field-studio-parking">
+                        <div class="option-header">
+                            <div class="option-title">
+                                <i class="fa-solid fa-square-parking icon-accent"></i>
+                                <div>
+                                    <h5>Vagas de Estacionamento</h5>
+                                    <p class="option-subtext">R$ 250,00 até 2 vagas, R$ 60,00 cada vaga extra</p>
+                                </div>
+                            </div>
+                            <div class="stepper">
+                                <button type="button" class="btn-step" id="btn-parking-minus"><i class="fa-solid fa-minus"></i></button>
+                                <input type="number" id="studio-parking-input" value="0" min="0" max="10" readonly>
+                                <button type="button" class="btn-step" id="btn-parking-plus"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+                        <div class="price-indicator" id="parking-price-indicator">
+                            <span class="badge">Nenhuma vaga incluída</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Contrato Imobiliário -->
+                <div class="config-group">
+                    <label class="group-label">3. Parcelamento do Contrato Imobiliário</label>
+                    <div class="contract-card">
+                        <div class="contract-header">
+                            <div class="contract-info">
+                                <h5>Taxa de Contrato Imobiliário</h5>
+                                <span class="contract-total">R$ 2.000,00</span>
+                            </div>
+                            <i class="fa-solid fa-file-signature contract-icon"></i>
+                        </div>
+                        <p class="contract-desc">O valor total do contrato pode ser diluído nas primeiras parcelas do seu aluguel mensal em até 5 vezes sem juros.</p>
+                        
+                        <div class="installments-selector">
+                            <label for="installments-range" class="slider-label">
+                                <span>Número de parcelas:</span>
+                                <strong id="installments-val-display">5x</strong>
+                            </label>
+                            <div class="range-container">
+                                <input type="range" id="installments-range" min="1" max="5" value="5" step="1">
+                                <div class="range-ticks">
+                                    <span>1x</span>
+                                    <span>2x</span>
+                                    <span>3x</span>
+                                    <span>4x</span>
+                                    <span>5x</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="installment-calc-preview">
+                            <span>Parcelas do contrato:</span>
+                            <strong id="contract-installment-calc">5 parcelas de R$ 400,00</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: Live Preview & Checkout Summary -->
+            <section class="summary-panel">
+                <div class="summary-card">
+                    <h3 class="summary-title">Orçamento Resumo</h3>
+                    
+                    <div class="summary-details">
+                        <!-- Rent Base Line -->
+                        <div class="summary-row">
+                            <span>Aluguel Base (<span id="summary-property-type">Apartamento</span>)</span>
+                            <span id="summary-base-price">R$ 700,00</span>
+                        </div>
+
+                        <!-- Bedrooms Add-on -->
+                        <div class="summary-row" id="summary-row-bedrooms">
+                            <span>Adicional de Quartos (2 Qts)</span>
+                            <span id="summary-bedrooms-price">R$ 200,00</span>
+                        </div>
+
+                        <!-- Garage/Parking Add-on -->
+                        <div class="summary-row" id="summary-row-garage">
+                            <span>Vaga de Garagem/Estacionamento</span>
+                            <span id="summary-garage-price">R$ 300,00</span>
+                        </div>
+
+                        <!-- Discount Row -->
+                        <div class="summary-row discount" id="summary-row-discount">
+                            <span>Desconto de 5% (Sem crianças)</span>
+                            <span id="summary-discount-price">- R$ 35,00</span>
+                        </div>
+
+                        <!-- Divider -->
+                        <hr class="summary-divider">
+
+                        <!-- Total Monthly Rent -->
+                        <div class="summary-row highlight">
+                            <span>Mensalidade do Aluguel</span>
+                            <span id="summary-monthly-rent">R$ 1.165,00</span>
+                        </div>
+
+                        <!-- Contract Info -->
+                        <div class="summary-row sub-row">
+                            <span>Taxa de Contrato (diluída)</span>
+                            <span id="summary-contract-installment">R$ 400,00 /mês</span>
+                        </div>
+                    </div>
+
+                    <!-- Grand Total Banner (Active during contract payment) -->
+                    <div class="total-banner">
+                        <div class="banner-title">Total nos primeiros <span id="banner-months-count">5</span> meses</div>
+                        <div class="banner-value" id="banner-grand-total">R$ 1.565,00 <small>/mês</small></div>
+                        <div class="banner-subtext">Depois reduz para <strong id="banner-reduced-rent">R$ 1.165,00</strong></div>
+                    </div>
+
+                    <!-- Quick Info -->
+                    <div class="quick-notice">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <span>O orçamento completo detalha as flutuações mensais pelos 12 meses da locação.</span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-primary" id="btn-download-csv">
+                            <i class="fa-solid fa-file-csv"></i> Exportar Orçamento (CSV)
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="btn-print-quote">
+                            <i class="fa-solid fa-print"></i> Imprimir Orçamento
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Month-by-month Schedule Preview -->
+                <div class="schedule-container">
+                    <h4><i class="fa-solid fa-calendar-days"></i> Fluxo de Caixa Anual (12 Meses)</h4>
+                    <div class="table-responsive">
+                        <table class="schedule-table" id="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Mês</th>
+                                    <th>Aluguel</th>
+                                    <th>Contrato</th>
+                                    <th>Total Mensal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- JS populated lines -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 R.M Imobiliária Ltda. Todos os direitos reservados. Desenvolvido para simulações financeiras de locação.</p>
+        </footer>
+    </div>
+
+    <!-- Notification system for visual feedback -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
